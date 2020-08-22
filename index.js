@@ -7,30 +7,26 @@ const { dbConnection } = require('./database/config');
 //mean_user
 
 
-
+//* ver orden
 // crea el servidor de express, inicialiacion
 const app = express();
 
+
 //config cors
 app.use(cors());
+
+
+//Lectura y parseo del body
+app.use( express.json() );
+
 
 //base de datos
 dbConnection();
 
 
-
-
 //rutas
-app.get( '/', (req, res) => {
-
-    res.json({
-        ok: true,
-        msg: 'hola mundo'
-    })
-
-} );
-
-
+app.use( '/api/usuarios', require('./routes/usuarios') );
+app.use( '/api/login', require('./routes/auth') );
 
 
 app.listen( process.env.PORT, () => {
