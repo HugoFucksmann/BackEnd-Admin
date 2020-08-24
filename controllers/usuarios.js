@@ -6,16 +6,33 @@ const { generarJWT } = require('../helpers/jwt');
 
 
 
- //*para usar el await hay que estar en una funcion async
+ //para usar el await hay que estar en una funcion async
 const getUsuarios = async (req, res) => {
 
-    //* {} para aplicar filtros, tambien se puede aplicar paginaciones o extraer mas campos
-    const usuarios = await Usuario.find( {}, 'nombre email role google' );
+    const desde = Number(req.query.desde) || 0;
+    console.log(desde);
+    // {} para aplicar filtros
+    /*const usuarios = await Usuario
+                            .find( {}, 'nombre email role google' )
+                            .skip( desde )
+                            .limit( 5 );
+
+    const total = await Usuario.count();*/
+    //otra forma propia de js
+    const [usuarios, total] = await Promise.all([
+        Usuario
+            .find( {}, 'nombre email role google' )
+            .skip( desde )
+            .limit( 5 ),
+        
+        Usuario.countDocuments()
+    ]);
 
     res.json({
         ok: true,
         usuarios,
-        uid: req.uid //id del usuario que realiza la peticion
+        total
+        //uid: req.uid //id del usuario que realiza la peticion
     });
 
 } 
@@ -58,7 +75,7 @@ const crearUsuario = async (req, res = response) => {
         res.json({
           ok: true,
           usuario,
-          token
+          //token
         });
 
     }catch(er){

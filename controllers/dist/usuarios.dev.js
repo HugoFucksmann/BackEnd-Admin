@@ -4,6 +4,14 @@ function _objectWithoutProperties(source, excluded) { if (source == null) return
 
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 var _require = require('express'),
     response = _require.response; //! para acceder al autocompletado de VScode, igualamos res a response
 
@@ -13,28 +21,42 @@ var bcrypt = require('bcryptjs');
 var Usuario = require('../models/usuario');
 
 var _require2 = require('../helpers/jwt'),
-    generarJWT = _require2.generarJWT; //*para usar el await hay que estar en una funcion async
+    generarJWT = _require2.generarJWT; //para usar el await hay que estar en una funcion async
 
 
 var getUsuarios = function getUsuarios(req, res) {
-  var usuarios;
+  var desde, _ref, _ref2, usuarios, total;
+
   return regeneratorRuntime.async(function getUsuarios$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _context.next = 2;
-          return regeneratorRuntime.awrap(Usuario.find({}, 'nombre email role google'));
+          desde = Number(req.query.desde) || 0;
+          console.log(desde); // {} para aplicar filtros
 
-        case 2:
-          usuarios = _context.sent;
+          /*const usuarios = await Usuario
+                                  .find( {}, 'nombre email role google' )
+                                  .skip( desde )
+                                  .limit( 5 );
+            const total = await Usuario.count();*/
+          //otra forma propia de js
+
+          _context.next = 4;
+          return regeneratorRuntime.awrap(Promise.all([Usuario.find({}, 'nombre email role google').skip(desde).limit(5), Usuario.countDocuments()]));
+
+        case 4:
+          _ref = _context.sent;
+          _ref2 = _slicedToArray(_ref, 2);
+          usuarios = _ref2[0];
+          total = _ref2[1];
           res.json({
             ok: true,
             usuarios: usuarios,
-            uid: req.uid //id del usuario que realiza la peticion
+            total: total //uid: req.uid //id del usuario que realiza la peticion
 
           });
 
-        case 4:
+        case 9:
         case "end":
           return _context.stop();
       }
@@ -96,8 +118,8 @@ var crearUsuario = function crearUsuario(req) {
           //! en express, .json() se puede llamar solo una vez en el bloque de codigo
           res.json({
             ok: true,
-            usuario: usuario,
-            token: token
+            usuario: usuario //token
+
           });
           _context2.next = 23;
           break;
