@@ -42,7 +42,7 @@ var getUsuarios = function getUsuarios(req, res) {
           //otra forma propia de js
 
           _context.next = 4;
-          return regeneratorRuntime.awrap(Promise.all([Usuario.find({}, 'nombre email role google').skip(desde).limit(5), Usuario.countDocuments()]));
+          return regeneratorRuntime.awrap(Promise.all([Usuario.find({}, 'nombre email role google img').skip(desde).limit(5), Usuario.countDocuments()]));
 
         case 4:
           _ref = _context.sent;
