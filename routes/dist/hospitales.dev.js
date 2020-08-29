@@ -22,6 +22,6 @@ var _require5 = require('../controllers/hospitales'),
 var router = Router();
 router.get('/', getHospital);
 router.post('/', [validarJWT, check('nombre', 'el nombre del hospital  es necesario').notEmpty(), validarCampos], crearHospital);
-router.put('/:id', [], actualizarHospital);
-router["delete"]('/:id', borrarHospital);
+router.put('/:id', [validarJWT, check('nombre', 'el nombre del hospital  es necesario').notEmpty(), validarCampos], actualizarHospital);
+router["delete"]('/:id', validarJWT, borrarHospital);
 module.exports = router;

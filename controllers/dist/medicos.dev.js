@@ -85,19 +85,125 @@ var crearMedicos = function crearMedicos(req) {
 };
 
 var actualizarMedicos = function actualizarMedicos(req) {
-  var res = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : response;
-  res.json({
-    ok: true,
-    msg: 'actualizarMedicos'
-  });
+  var res,
+      medicoId,
+      medicoDB,
+      cambiosMedico,
+      medicoActualizado,
+      _args3 = arguments;
+  return regeneratorRuntime.async(function actualizarMedicos$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          res = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : response;
+          medicoId = req.params.id; //const uid = req.uid;
+
+          _context3.prev = 2;
+          _context3.next = 5;
+          return regeneratorRuntime.awrap(Medicos.findById(medicoId));
+
+        case 5:
+          medicoDB = _context3.sent;
+
+          if (medicoDB) {
+            _context3.next = 8;
+            break;
+          }
+
+          return _context3.abrupt("return", res.status(404).json({
+            ok: false,
+            msg: 'medico no encontrado'
+          }));
+
+        case 8:
+          //hospitalDB.nombre = req.body.nombre;
+          cambiosMedico = _objectSpread({}, req.body);
+          _context3.next = 11;
+          return regeneratorRuntime.awrap(Medicos.findByIdAndUpdate(medicoId, cambiosMedico, {
+            "new": true
+          }));
+
+        case 11:
+          medicoActualizado = _context3.sent;
+          res.json({
+            ok: true,
+            medico: medicoActualizado
+          });
+          _context3.next = 19;
+          break;
+
+        case 15:
+          _context3.prev = 15;
+          _context3.t0 = _context3["catch"](2);
+          console.log(_context3.t0);
+          res.status(500).json({
+            ok: false,
+            msg: 'Error hsble con el admin'
+          });
+
+        case 19:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  }, null, null, [[2, 15]]);
 };
 
 var borrarMedicos = function borrarMedicos(req) {
-  var res = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : response;
-  res.json({
-    ok: true,
-    msg: 'borrarMedicos'
-  });
+  var res,
+      medicoId,
+      medicosDB,
+      _args4 = arguments;
+  return regeneratorRuntime.async(function borrarMedicos$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          res = _args4.length > 1 && _args4[1] !== undefined ? _args4[1] : response;
+          medicoId = req.params.id;
+          _context4.prev = 2;
+          _context4.next = 5;
+          return regeneratorRuntime.awrap(Medicos.findById(medicoId));
+
+        case 5:
+          medicosDB = _context4.sent;
+
+          if (medicosDB) {
+            _context4.next = 8;
+            break;
+          }
+
+          return _context4.abrupt("return", res.status(404).json({
+            ok: false,
+            msg: 'medico no encontrado'
+          }));
+
+        case 8:
+          _context4.next = 10;
+          return regeneratorRuntime.awrap(Medicos.findByIdAndDelete(medicoId));
+
+        case 10:
+          res.json({
+            ok: true,
+            msg: 'medico eliminado'
+          });
+          _context4.next = 17;
+          break;
+
+        case 13:
+          _context4.prev = 13;
+          _context4.t0 = _context4["catch"](2);
+          console.log(_context4.t0);
+          res.status(500).json({
+            ok: false,
+            msg: 'Error hable con el admin'
+          });
+
+        case 17:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  }, null, null, [[2, 13]]);
 };
 
 module.exports = {

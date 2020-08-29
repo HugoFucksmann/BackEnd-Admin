@@ -6,7 +6,7 @@ var _require = require('google-auth-library'),
 var client = new OAuth2Client(process.env.GOOGLE_ID);
 
 var googleVerify = function googleVerify(token) {
-  var ticket, payload, userid, name, email, picture;
+  var ticket, payload, name, email, picture;
   return regeneratorRuntime.async(function googleVerify$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
@@ -23,8 +23,6 @@ var googleVerify = function googleVerify(token) {
         case 2:
           ticket = _context.sent;
           payload = ticket.getPayload();
-          userid = payload['sub'];
-          console.log(payload);
           name = payload.name, email = payload.email, picture = payload.picture;
           return _context.abrupt("return", {
             name: name,
@@ -32,7 +30,7 @@ var googleVerify = function googleVerify(token) {
             picture: picture
           });
 
-        case 8:
+        case 6:
         case "end":
           return _context.stop();
       }

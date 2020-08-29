@@ -13,6 +13,8 @@ var _require2 = require('../helpers/jwt'),
 var _require3 = require('../helpers/googleVerify'),
     googleVerify = _require3.googleVerify;
 
+var usuario = require('../models/usuario');
+
 var login = function login(req) {
   var res,
       _req$body,
@@ -32,19 +34,15 @@ var login = function login(req) {
           _req$body = req.body, email = _req$body.email, password = _req$body.password;
           _context.prev = 2;
           _context.next = 5;
-          return regeneratorRuntime.awrap(googleVerify(googleToken));
-
-        case 5:
-          _context.next = 7;
           return regeneratorRuntime.awrap(Usuario.findOne({
             email: email
           }));
 
-        case 7:
+        case 5:
           usuarioDB = _context.sent;
 
           if (usuarioDB) {
-            _context.next = 10;
+            _context.next = 8;
             break;
           }
 
@@ -53,12 +51,12 @@ var login = function login(req) {
             msg: 'email noo encontrado'
           }));
 
-        case 10:
+        case 8:
           //verificar password
           validPassword = bcrypt.compareSync(password, usuarioDB.password);
 
           if (validPassword) {
-            _context.next = 13;
+            _context.next = 11;
             break;
           }
 
@@ -67,34 +65,34 @@ var login = function login(req) {
             msg: 'password no valido'
           }));
 
-        case 13:
-          _context.next = 15;
+        case 11:
+          _context.next = 13;
           return regeneratorRuntime.awrap(generarJWT(usuarioDB.id));
 
-        case 15:
+        case 13:
           token = _context.sent;
           res.json({
             ok: true,
             msg: 'todo ok!',
             token: token
           });
-          _context.next = 22;
+          _context.next = 20;
           break;
 
-        case 19:
-          _context.prev = 19;
+        case 17:
+          _context.prev = 17;
           _context.t0 = _context["catch"](2);
           res.status(500).json({
             ok: false,
             msg: 'Hable con el administrador'
           });
 
-        case 22:
+        case 20:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[2, 19]]);
+  }, null, null, [[2, 17]]);
 };
 
 var googleSignIn = function googleSignIn(req) {
@@ -179,7 +177,38 @@ var googleSignIn = function googleSignIn(req) {
   });
 };
 
+var renewToken = function renewToken(req) {
+  var res,
+      uid,
+      token,
+      _args3 = arguments;
+  return regeneratorRuntime.async(function renewToken$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          res = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : response;
+          uid = req.uid; //generar el TOKEN JWT
+
+          _context3.next = 4;
+          return regeneratorRuntime.awrap(generarJWT(uid));
+
+        case 4:
+          token = _context3.sent;
+          res.json({
+            ok: true,
+            token: token
+          });
+
+        case 6:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  });
+};
+
 module.exports = {
   login: login,
-  googleSignIn: googleSignIn
+  googleSignIn: googleSignIn,
+  renewToken: renewToken
 };

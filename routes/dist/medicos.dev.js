@@ -23,6 +23,7 @@ var _require5 = require('../controllers/medicos'),
 var router = Router();
 router.get('/', getMedicos);
 router.post('/', [validarJWT, check('nombre', 'el nombre del medico es obligatorio').notEmpty(), check('hospitales', 'el id del hospital debe ser valido').isMongoId(), validarCampos], crearMedicos);
-router.put('/:id', [], actualizarMedicos);
-router["delete"]('/:id', borrarMedicos);
+router.put('/:id', [validarJWT, check('nombre', 'el nombre del medico es obligatorio').notEmpty(), //check('hospital', 'el id del hospital debe ser valido').isMongoId(),
+validarCampos], actualizarMedicos);
+router["delete"]('/:id', validarJWT, borrarMedicos);
 module.exports = router;
