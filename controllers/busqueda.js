@@ -69,11 +69,11 @@ const getDocumentosColeccion = async (req, res=response ) => {
             })
     }
 
-    res.status(400).json({
-        ok: false,
+    res.json({
+        ok: true,
         resultado: data
     });
-
+   
 
 }
 

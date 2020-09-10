@@ -1,4 +1,4 @@
-const { response } = require('express'); //! para acceder al autocompletado de VScode, igualamos res a response
+const { response } = require('express');
 const bcrypt = require('bcryptjs');
 
 const Usuario = require('../models/usuario');
@@ -10,7 +10,7 @@ const { generarJWT } = require('../helpers/jwt');
 const getUsuarios = async (req, res) => {
 
     const desde = Number(req.query.desde) || 0;
-    console.log(desde);
+    
     // {} para aplicar filtros
     /*const usuarios = await Usuario
                             .find( {}, 'nombre email role google' )
@@ -75,11 +75,11 @@ const crearUsuario = async (req, res = response) => {
         res.json({
           ok: true,
           usuario,
-          //token
+          token
         });
 
-    }catch(er){
-        console.log(er);
+    }catch(err){
+        console.log(err);
         res.status(500).json({
             ok: false,
             msg: 'Error inesperado...'
@@ -145,7 +145,15 @@ const actualizarUsuario = async (req, res = response) => {
             }
         }
 
-        campos.email = email;
+        if( !usuarioDB.google ){
+            campos.email = email;
+            
+        }else if ( usuarioDB.email !== email ){
+            return res.status(400).json({
+                ok: false,
+                msg: 'Los usuarios de google no puenden acambiar su correo'
+            });
+        }
 
         //?--------------------------------------------
         
@@ -171,7 +179,7 @@ const actualizarUsuario = async (req, res = response) => {
 const borrarUsuario = async (req, res = response) => {
 
     const uid = req.params.id;
-
+    
     try {
 
         const usuarioDB = await Usuario.findById( uid );
@@ -183,7 +191,7 @@ const borrarUsuario = async (req, res = response) => {
             });
         }
 
-        await Usuario.findOneAndDelete( uid );
+        await Usuario.findByIdAndDelete( uid );
         
         res.json({
             ok: true,

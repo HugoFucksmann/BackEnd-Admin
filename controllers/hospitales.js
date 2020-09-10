@@ -1,14 +1,17 @@
 const { response } = require('express');
 const Hospital = require('../models/hospital');
-const hospital = require('../models/hospital');
 
 const getHospital = async ( req, res=response ) => {
 
+    
+
     const hospitales = await Hospital.find().populate( 'usuario', 'nombre img' );
+    const total = await Hospital.countDocuments();
 
     res.json({
         ok: true,
-        hospitales
+        hospitales,
+        total
     })
 }
 
@@ -117,8 +120,6 @@ const borrarHospital = async( req, res=response ) => {
         })
     }
 }
-
-
 
 
 

@@ -100,7 +100,7 @@ const retornaImagen = ( req, res=response ) => {
     //imagen por defecto
     if ( fs.existsSync( pathImg ) ) {
 
-        res.sendfile( pathImg );
+        res.sendFile( pathImg );
     }else{
 
         const pathImg = path.join( __dirname, `../uploads/no-img.jpg` );

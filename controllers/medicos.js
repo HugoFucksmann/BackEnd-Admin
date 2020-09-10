@@ -3,13 +3,41 @@ const Medicos = require('../models/medicos');
 
 const getMedicos = async( req, res=response ) => {
 
-    const medicos = await Medicos.find().populate( 'usuario', 'nombre img' ).populate('hospitales','nombre img');
+    const desde = Number(req.query.desde) || 0;
+    const medicos = await Medicos.find().skip(desde).limit(5).populate( 'usuario', 'nombre img' ).populate('hospitales','nombre img');
+    const total = await Medicos.countDocuments();
     
     res.json({
         ok: true,
-        medicos
+        medicos,
+        total
     })
 }
+
+
+const getMedicoById = async( req, res=response ) => {
+
+    const id = req.params.id;
+
+    try {
+        const medico = await Medicos.findById(id).populate( 'usuario', 'nombre img' ).populate('hospitales','nombre img');
+        const total = await Medicos.countDocuments();
+        
+        res.json({
+            ok: true,
+            medico,
+        })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({
+            ok: false,
+            msg: 'medico no encontrado',
+        })
+    }
+    
+}
+
 
 const crearMedicos = async ( req, res=response ) => {
 
@@ -38,6 +66,7 @@ const crearMedicos = async ( req, res=response ) => {
         })
     }
 }
+
 
 const actualizarMedicos = async( req, res=response ) => {
 
@@ -77,10 +106,11 @@ const actualizarMedicos = async( req, res=response ) => {
     }
 }
 
+
 const borrarMedicos = async( req, res=response ) => {
 
     const medicoId = req.params.id;
-
+    
     try {
 
         const medicosDB = await Medicos.findById( medicoId );
@@ -116,5 +146,6 @@ module.exports = {
     getMedicos, 
     crearMedicos, 
     actualizarMedicos, 
-    borrarMedicos
+    borrarMedicos,
+    getMedicoById
 }

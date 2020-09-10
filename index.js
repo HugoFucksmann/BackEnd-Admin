@@ -1,5 +1,6 @@
 require('dotenv').config();
-const express = require('express'); //equivale a import {} from ''
+
+const express = require('express');
 const cors = require('cors');
 const { dbConnection } = require('./database/config');
 
@@ -13,7 +14,7 @@ const app = express();
 
 
 //config cors
-app.use(cors());
+app.use( cors() );
 
 
 //Lectura y parseo del body
