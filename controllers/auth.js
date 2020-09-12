@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const Usuario = require('../models/usuario');
 const { generarJWT } = require('../helpers/jwt');
 const { googleVerify } = require('../helpers/googleVerify');
+const { getMenuFrontEnd } = require('../helpers/menu-fronEnd');
 
 
 
@@ -42,8 +43,8 @@ const login = async( req, res = response ) => {
 
         res.json({
             ok: true,
-            msg: 'todo ok!',
-            token
+            token,
+            menu: getMenuFrontEnd( usuarioDB.role )
         })
         
     } catch (error) {
@@ -58,49 +59,47 @@ const googleSignIn = async( req, res=response ) => {
 
     const googleToken = req.body.token;
 
-    const { name, email, picture } = await googleVerify( googleToken );
+    try {
 
-    //crear usuario a partir de googleSingIn
-    const usuarioDB = await Usuario.findOne({email});
-    let usuario;
+      const { name, email, picture } = await googleVerify(googleToken);
 
-    if (!usuarioDB){
+      //crear usuario a partir de googleSingIn
+      const usuarioDB = await Usuario.findOne({ email });
+      let usuario;
+
+      if (!usuarioDB) {
         //si no existe el usuario en BD
         usuario = new Usuario({
-            nombre: name,
-            email,
-            password: '@@@',
-            img: picture,
-            google: true
+          nombre: name,
+          email,
+          password: "@@@",
+          img: picture,
+          google: true,
         });
-    }else{
+      } else {
         //existe usuario
         usuario = usuarioDB;
         usuarioDB.google = true;
-    }
+      }
 
-    //guarda en BBDD
-    await usuario.save();
+      //guarda en BBDD
+      await usuario.save();
 
-    //Generar TOKEN - JWT
-    const token = await generarJWT( usuario.id );
-//-------------------------------------------------
-    try {
-        
+      //Generar TOKEN - JWT
+      const token = await generarJWT(usuario.id);
+      //-------------------------------------------------
 
-        res.json({
-            ok: true,
-            msj: 'Google!',
-            token
-        })
-        
+      res.json({
+        ok: true,
+        token,
+        menu: getMenuFrontEnd( usuario.role )
+      });
+
     } catch (error) {
-
-        res.status(401).json({
-            ok: false,
-            msj: 'token no es correcto o...'
-            
-        })
+      res.status(401).json({
+        ok: false,
+        msj: "token no es correcto o...",
+      });
     }
 }
 
@@ -117,9 +116,10 @@ const renewToken = async(req, res=response ) => {
     
 
     res.json({
-        ok: true,
-        token,
-        usuario
+      ok: true,
+      token,
+      usuario,
+      menu: getMenuFrontEnd(usuario.role)
     });
 }
 
