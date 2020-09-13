@@ -12,8 +12,6 @@ const dbConnection = async() => {
             useFindAndModify: false
         });
 
-        console.log('DB online');
-
     }catch(error){
 
         console.log(error);
