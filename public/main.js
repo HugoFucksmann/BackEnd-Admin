@@ -842,7 +842,7 @@ class RegisterComponent {
             // Navegar al dashboard
             this.router.navigateByUrl('/');
         }, (err) => {
-            console.warn(err.error.msg);
+            console.log(err);
             sweetalert2__WEBPACK_IMPORTED_MODULE_2___default.a.fire('Error', err.error.msg, 'error');
         });
     }
@@ -5230,7 +5230,7 @@ __webpack_require__.r(__webpack_exports__);
 // The list of file replacements can be found in `angular.json`.
 const environment = {
     production: false,
-    base_url: 'https://back-end-admin.herokuapp.com/api',
+    base_url: 'http://localhost:3005/api'
 };
 /*
  * For easier debugging in development mode, you can import the following file
