@@ -658,9 +658,7 @@ class LoginComponent {
             //console.log(id_token);
             this.usuarioService.loginGoolge(id_token)
                 .subscribe(resp => {
-                this.ngZone.run(() => {
-                    this.router.navigateByUrl('/');
-                });
+                this.router.navigateByUrl('/');
             });
         }, (error) => {
             console.log('paso algo malo che');
@@ -833,7 +831,6 @@ class RegisterComponent {
     }
     crearUsuario() {
         this.formularioEnviado = true;
-        console.log(this.formularioRegistro.value);
         if (this.formularioRegistro.invalid) {
             return;
         }
@@ -4251,8 +4248,6 @@ class UsuarioService {
                 this.auth2 = gapi.auth2.init({
                     client_id: '1088794549338-ffn8ok60r5ripbhc39r8jo05k68fe2cj.apps.googleusercontent.com',
                     cookiepolicy: 'single_host_origin',
-                    absoluteURI: 'http://herokupath',
-                    proxy: true
                 });
                 resolve();
             });
