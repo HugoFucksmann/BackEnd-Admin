@@ -62,7 +62,7 @@ const googleSignIn = async( req, res=response ) => {
     try {
 
       const { name, email, picture } = await googleVerify(googleToken);
-
+      
       //crear usuario a partir de googleSingIn
       const usuarioDB = await Usuario.findOne({ email });
       let usuario;
@@ -81,7 +81,7 @@ const googleSignIn = async( req, res=response ) => {
         usuario = usuarioDB;
         usuarioDB.google = true;
       }
-
+     
       //guarda en BBDD
       await usuario.save();
 
@@ -98,6 +98,7 @@ const googleSignIn = async( req, res=response ) => {
     } catch (error) {
       res.status(401).json({
         ok: false,
+        err: error,
         msj: "token no es correcto o...",
       });
     }

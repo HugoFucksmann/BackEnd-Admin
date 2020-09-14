@@ -12,15 +12,11 @@ const googleVerify = async( token ) => {
     });
     const payload = ticket.getPayload();
     
-    
     const { name, email, picture } = payload;
     
     return { name, email, picture };
 
 }
-
-
-
 
 module.exports = {
     googleVerify
